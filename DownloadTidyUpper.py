@@ -18,20 +18,23 @@ config.read("settings.ini")
 
 watch = config["directory"]["watch"]
 if(watch[0] == "~"):
-    home = pathlib.Path.home()
+    home = str(pathlib.Path.home())
     watch = home+watch[1:]
+watch = watch.replace("\\", "/")
+if(watch[-1] != "/"):
+    watch = watch + "/"
 
-extrapath = "./Extra/"
-archpath = "./Archives/"
-pdfpath = "./PDFs/"
-exepath = "./EXEs/"
-isopath = "./ISOs/"
-imgpath = "./Images/"
-lopath = "./Leftover/"
+extrapath = watch+"/Extra/"
+archpath = watch+"/Archives/"
+pdfpath = watch+"/PDFs/"
+exepath = watch+"/EXEs/"
+isopath = watch+"/ISOs/"
+imgpath = watch+"/Images/"
+lopath = watch+"/Leftover/"
 
 if (not os.path.exists(extrapath)):
     os.mkdir(extrapath)
-files = os.listdir()
+files = os.listdir(watch)
 for file in files:
     if (os.path.isdir(file)
             and not areSameFile(extrapath, file)
@@ -66,23 +69,24 @@ if (not os.path.exists(imgpath)):
 if (not os.path.exists(lopath)):
     os.mkdir(lopath)
 
-files = os.listdir()
+files = os.listdir(watch)
 for file in files:
     if (re.match("(.*)[.](.*)", file) and not re.match("(.*)[.]py", file)):
         try:
+            abs_file = watch + file
             if (re.match(archreg, file)):
-                os.rename(file, archpath + file)
+                os.rename(abs_file, archpath + file)
             elif (re.match(pdfreg, file)):
-                os.rename(file, pdfpath + file)
+                os.rename(abs_file, pdfpath + file)
             elif (re.match(exereg, file)):
-                os.rename(file, exepath + file)
+                os.rename(abs_file, exepath + file)
             elif (re.match(isoreg, file)):
-                os.rename(file, isopath + file)
+                os.rename(abs_file, isopath + file)
             elif (re.match(imgreg, file)):
-                os.rename(file, imgpath + file)
+                os.rename(abs_file, imgpath + file)
             else:
-                os.rename(file, lopath + file)
+                os.rename(abs_file, lopath + file)
         except FileExistsError:
-            os.remove(file)
+            os.remove(abs_file)
         except PermissionError:
             pass
