@@ -4,7 +4,8 @@ import re
 import configparser
 import pathlib
 
-def areSameFile(file1, file2):
+
+def are_same_file(file1, file2):
     try:
         absf1 = os.path.abspath(file1)
         absf2 = os.path.abspath(file2)
@@ -13,79 +14,96 @@ def areSameFile(file1, file2):
         return False
 
 
+def prepare_new_filename(prep_file):
+    i = 1
+    if re.match("(.*)\\([0-9]+\\)", prep_file):
+        cop_num = re.findall("\\([0-9]+\\)", prep_file)[0]
+        i = int(cop_num[1:-1]) + 1
+    new_file = prep_file
+    while True:
+        if not os.path.exists(new_file):
+            return new_file
+        else:
+            if i == 1:
+                new_file = new_file + "(" + str(i) + ")"
+            else:
+                new_file = new_file[:-3] + "(" + str(i) + ")"
+            i += 1
+
+
 config = configparser.ConfigParser()
 config.read("settings.ini")
 
 watch = config["directory"]["watch"]
-if(watch[0] == "~"):
+if watch[0] == "~":
     home = str(pathlib.Path.home())
     watch = home+watch[1:]
 watch = watch.replace("\\", "/")
-if(watch[-1] != "/"):
+if watch[-1] != "/":
     watch = watch + "/"
 
-extrapath = watch+"/Extra/"
-archpath = watch+"/Archives/"
-pdfpath = watch+"/PDFs/"
-exepath = watch+"/EXEs/"
-isopath = watch+"/ISOs/"
-imgpath = watch+"/Images/"
-lopath = watch+"/Leftover/"
+folders = {
+    "extra": {
+        "path": watch+"Extra/",
+        "reg": None
+    },
+    "archives": {
+        "path": watch+"Archives/",
+        "reg": "(.*)([.]rar|[.]zip|[.]7z)"
+    },
+    "pdfs": {
+        "path": watch+"PDFs/",
+        "reg": "(.*)[.]pdf"
+    },
+    "exes": {
+        "path": watch+"EXEs/",
+        "reg": "(.*)([.]exe|[.]msi)"
+    },
+    "isos": {
+        "path": watch+"ISOs/",
+        "reg": "(.*)[.]iso"
+    },
+    "imgs": {
+        "path": watch+"Images/",
+        "reg": "(.*)([.]jpg|[.]gif|[.]jpeg|[.]png)"
+    },
+    "leftover": {
+        "path": watch+"Leftover/",
+        "reg": None
+    },
+}
 
-if (not os.path.exists(extrapath)):
-    os.mkdir(extrapath)
-files = os.listdir(watch)
-for file in files:
-    if (os.path.isdir(file)
-            and not areSameFile(extrapath, file)
-            and not areSameFile(archpath, file)
-            and not areSameFile(pdfpath, file)
-            and not areSameFile(exepath, file)
-            and not areSameFile(isopath, file)
-            and not areSameFile(imgpath, file)
-            and not areSameFile(lopath, file)):
-        os.rename(file, extrapath + file)
-
-archreg = "(.*)([.]rar|[.]zip|[.]7z)"
-if (not os.path.exists(archpath)):
-    os.mkdir(archpath)
-
-pdfreg = "(.*)[.]pdf"
-if (not os.path.exists(pdfpath)):
-    os.mkdir(pdfpath)
-
-exereg = "(.*)([.]exe|[.]msi)"
-if (not os.path.exists(exepath)):
-    os.mkdir(exepath)
-
-isoreg = "(.*)[.]iso"
-if (not os.path.exists(isopath)):
-    os.mkdir(isopath)
-
-imgreg = "(.*)([.]jpg|[.]gif|[.]jpeg|[.]png)"
-if (not os.path.exists(imgpath)):
-    os.mkdir(imgpath)
-
-if (not os.path.exists(lopath)):
-    os.mkdir(lopath)
+for folder in folders.values():
+    if not os.path.exists(folder["path"]):
+        os.mkdir(folder["path"])
 
 files = os.listdir(watch)
 for file in files:
-    if (re.match("(.*)[.](.*)", file) and not re.match("(.*)[.]py", file)):
+    known_folder = False
+    for folder in folders.values():
+        if are_same_file(folder["path"], watch + file):
+            known_folder = True
+    if not known_folder and os.path.isdir(watch+file):
+        new_file = prepare_new_filename(folders["extra"]["path"] + file)
+        os.rename(watch+file, new_file)
+
+files = os.listdir(watch)
+for file in files:
+    if re.match("(.*)[.](.*)", file) and not re.match("(.*)[.]py", file):
+        abs_file = watch + file
         try:
-            abs_file = watch + file
-            if (re.match(archreg, file)):
-                os.rename(abs_file, archpath + file)
-            elif (re.match(pdfreg, file)):
-                os.rename(abs_file, pdfpath + file)
-            elif (re.match(exereg, file)):
-                os.rename(abs_file, exepath + file)
-            elif (re.match(isoreg, file)):
-                os.rename(abs_file, isopath + file)
-            elif (re.match(imgreg, file)):
-                os.rename(abs_file, imgpath + file)
-            else:
-                os.rename(abs_file, lopath + file)
+            matched = False
+            for folder in folders.values():
+                if folder["reg"] is None:
+                    continue
+                if re.match(folder["reg"], file):
+                    new_file = prepare_new_filename(folder["path"] + file)
+                    os.rename(abs_file, new_file)
+                    matched = True
+                    break
+            if not matched:
+                new_file = prepare_new_filename(folders["leftover"]["path"] + file)
+                os.rename(abs_file, new_file)
         except FileExistsError:
             os.remove(abs_file)
         except PermissionError:
