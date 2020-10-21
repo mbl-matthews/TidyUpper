@@ -104,7 +104,5 @@ for file in files:
             if not matched:
                 new_file = prepare_new_filename(folders["leftover"]["path"] + file)
                 os.rename(abs_file, new_file)
-        except FileExistsError:
-            os.remove(abs_file)
         except PermissionError:
             pass
