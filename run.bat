@@ -1,0 +1,2 @@
+py DownloadTidyUpper.py
+pause
