@@ -21,3 +21,5 @@ Example:
 [folder]
 videos={"paths":"Videos", "filetype":"mp4,mkv,avi,webm"}
 ```
+
+If you wish to automate this, i.e. with the Windows task scheduler, you can utilize the ```run.bat``` to run the script
