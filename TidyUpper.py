@@ -1,8 +1,8 @@
 import os
-import shutil
 import re
 import configparser
 import pathlib
+import json
 
 
 def are_same_file(file1, file2):
@@ -47,31 +47,31 @@ folders = {
         "path": watch+"Extra/",
         "reg": None
     },
-    "archives": {
-        "path": watch+"Archives/",
-        "reg": "(.*)([.]rar|[.]zip|[.]7z)"
-    },
-    "pdfs": {
-        "path": watch+"PDFs/",
-        "reg": "(.*)[.]pdf"
-    },
-    "exes": {
-        "path": watch+"EXEs/",
-        "reg": "(.*)([.]exe|[.]msi)"
-    },
-    "isos": {
-        "path": watch+"ISOs/",
-        "reg": "(.*)[.]iso"
-    },
-    "imgs": {
-        "path": watch+"Images/",
-        "reg": "(.*)([.]jpg|[.]gif|[.]jpeg|[.]png)"
-    },
     "leftover": {
         "path": watch+"Leftover/",
         "reg": None
     },
 }
+
+if config.has_section("folder"):
+    for entry in config["folder"]:
+        try:
+            entryjson = json.loads(config["folder"][entry])
+            path = entryjson["path"]
+            if path[-1] != "/":
+                path = path + "/"
+            filetypes = entryjson["filetype"].split(",")
+            filereg = "(.*)("
+            for ftype in filetypes:
+                filereg = filereg + "[.]" + ftype + "|"
+            filereg = filereg[:-1] + ")"
+
+            folders[entry] = {
+                "path": watch + path,
+                "reg": filereg
+            }
+        except:
+            print("Syntax Error at entry "+entry)
 
 for folder in folders.values():
     if not os.path.exists(folder["path"]):
