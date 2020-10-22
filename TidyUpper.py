@@ -14,20 +14,32 @@ def are_same_file(file1, file2):
         return False
 
 
+def file_to_name_type(prep_file):
+    splitted = os.path.splitext(prep_file)
+    return {
+        "name": splitted[0],
+        "type": splitted[1]
+    }
+
+
 def prepare_new_filename(prep_file):
     i = 1
-    if re.match("(.*)\\([0-9]+\\)", prep_file):
-        cop_num = re.findall("\\([0-9]+\\)", prep_file)[0]
+    fname = {
+        "name": prep_file,
+        "type": ""
+    }
+    if not os.path.isdir(prep_file):
+        fname = file_to_name_type(prep_file)
+
+    if re.match("(.*)\\([0-9]+\\)", fname["name"]):
+        cop_num = re.findall("\\([0-9]+\\)", fname["name"])[0]
         i = int(cop_num[1:-1]) + 1
-    new_file = prep_file
+    new_file = fname["name"] + fname["type"]
     while True:
         if not os.path.exists(new_file):
             return new_file
         else:
-            if i == 1:
-                new_file = new_file + "(" + str(i) + ")"
-            else:
-                new_file = new_file[:-3] + "(" + str(i) + ")"
+            new_file = fname["name"] + "(" + str(i) + ")" + fname["type"]
             i += 1
 
 
