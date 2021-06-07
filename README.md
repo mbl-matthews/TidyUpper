@@ -16,8 +16,6 @@ The directory that shall be cleaned up needs to be configured under watch. You c
 To add a new directory with file extenions simply give a key followed with a json object containing a ```path``` value with the path relative to watching directory
 and a ```filetype``` value with the file extensions comma seperated.
 
-If you want each folder to contain a subfolder for each filetype in the directory with symlinks to each file with the corresponding filetypes simply set the option `sub_for_datatype` to true. If not simply set the option to any other value or delete the option from your `settings.ini`.
-
 Example:
 ```
 [folder]
@@ -25,6 +23,8 @@ videos={"paths":"Videos", "filetype":"mp4,mkv,avi,webm"}
 ```
 
 If you wish to automate this, i.e. with the Windows task scheduler, you can utilize the ```run.bat``` to run the script
+
+If you want each folder to contain a subfolder for each filetype in the directory with symlinks to each file with the corresponding filetypes simply set the option `sub_for_datatype` to true. If not simply set the option to any other value or delete the option from your `settings.ini`.
 
 # Execution
 
