@@ -1,2 +1,2 @@
-py TidyUpper.py
+py %~dp0TidyUpper.py
 pause
