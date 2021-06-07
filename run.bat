@@ -1,2 +1,2 @@
-py DownloadTidyUpper.py
+py TidyUpper.py
 pause
