@@ -11,11 +11,16 @@ testfiles = [
     "archive.zip",
     "archive.7z",
     "executable.exe",
-    "executable.msi"
+    "executable.msi",
+    "os.iso",
+    "i.jpg",
+    "i.jpeg",
+    "m.gif",
+    "g.png",
 ]
 
 def cleanup():
-    shutil.rmtree(env)
+    # shutil.rmtree(env)
     pass
 
 @pytest.fixture(scope="session", autouse=True)
@@ -46,7 +51,7 @@ isos={{"path":"ISOs", "filetype":"iso"}}
 imgs={{"path":"Images", "filetype":"jpg,jpeg,gif,png"}}
 
 [options]
-sub_for_datatype=false
+sub_for_datatype=true
             """.format(os.path.join(os.getcwd(), env)).strip()
             f.write(content)
             
