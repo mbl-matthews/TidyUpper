@@ -1,2 +1,3 @@
-py %~dp0TidyUpper.py
+cd /D "%~dp0"
+py -m src.TidyUpper
 pause
