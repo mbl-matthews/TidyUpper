@@ -1,17 +1,11 @@
 import os
-import re
 import configparser
 import pathlib
-import json
 
-from src.util import Helper
 from src.tidy import Tidy
 from src.subdir import Subdir
 
 def run(options={"settings": "settings.ini"}):
-    abspath = os.path.abspath(__file__)
-    dname = os.path.dirname(abspath)
-    os.chdir(dname)
 
     config = configparser.ConfigParser()
     config.read(options["settings"])
@@ -39,4 +33,5 @@ def run(options={"settings": "settings.ini"}):
     Subdir.link(config, folders, watch)              
                     
 if __name__ == "__main__":
+    print("Running whole TidyUpper Script")
     run()
