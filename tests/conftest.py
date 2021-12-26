@@ -20,7 +20,7 @@ testfiles = [
 ]
 
 def cleanup():
-    # shutil.rmtree(env)
+    shutil.rmtree(env)
     pass
 
 @pytest.fixture(scope="session", autouse=True)

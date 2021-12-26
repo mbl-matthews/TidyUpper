@@ -53,10 +53,10 @@ def test_run():
       
     img = os.path.join(env, "Images")
     assert os.path.exists(img)
-    assert os.path.exists(os.path.join(img, "jpg"))
-    assert os.path.exists(os.path.join(img, "jpeg"))
-    assert os.path.exists(os.path.join(img, "gif"))
-    assert os.path.exists(os.path.join(img, "png"))
+    assert os.path.exists(os.path.join(img, ".jpg"))
+    assert os.path.exists(os.path.join(img, ".jpeg"))
+    assert os.path.exists(os.path.join(img, ".gif"))
+    assert os.path.exists(os.path.join(img, ".png"))
     
     # TODO create case to test that every possible ending is covered  
     assert os.path.exists(os.path.join(env, "Leftover"))  
