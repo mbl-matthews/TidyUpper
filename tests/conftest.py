@@ -19,13 +19,19 @@ testfiles = [
     "g.png",
 ]
 
+
 def cleanup():
     shutil.rmtree(env)
     pass
 
+
 @pytest.fixture(scope="session", autouse=True)
 def cwd():
     os.chdir("./tests")
+    
+    if os.path.exists(env): 
+        shutil.rmtree(env)
+        
 
 @pytest.fixture(scope="function", autouse=True)
 def create_env(request):
@@ -33,26 +39,61 @@ def create_env(request):
     
     try:
         os.mkdir(env)
-        
-        with open(os.path.join(env, "settings.ini"), 'w') as f:
+                
+        with open(os.path.join(env, "config.json"), 'w') as f:
             content = """
-[schedule]
-interval=3600
-modified=3600
-
-[directory]
-watch={0}
-
-[folder]
-archives={{"path":"Archives", "filetype":"rar,zip,7z"}}
-pdfs={{"path":"PDFs", "filetype":"pdf"}}
-exes={{"path":"EXEs", "filetype":"exe,msi"}}
-isos={{"path":"ISOs", "filetype":"iso"}}
-imgs={{"path":"Images", "filetype":"jpg,jpeg,gif,png"}}
-
-[options]
-sub_for_datatype=true
-            """.format(os.path.join(os.getcwd(), env)).strip()
+{
+    \"schedule\": {
+        \"interval\": 3600,
+        \"modified\": 3600
+    },
+    \"directory\": {
+        "watch": \""""+os.path.join(os.getcwd(), "env").replace("\\", "\\\\")+"""\"
+    },
+    \"folder\": [
+        {
+            \"path\": \"Archives\",
+            \"filetypes\": [
+                \"rar\",
+                \"zip\",
+                \"7z\"
+            ]
+        },
+        {
+            \"path\": \"PDFs\",
+            \"filetypes\": [
+                \"pdf\"
+            ]
+        },
+        {
+            \"path\": \"EXEs\",
+            \"filetypes\": [
+                \"exe\",
+                \"msi\"
+            ]
+        },
+        {
+            \"path\": \"ISOs\",
+            \"filetypes\": [
+                \"iso\"
+            ]
+        },
+        {
+            \"path\": \"Images\",
+            \"filetypes\": [
+                \"jpg\",
+                \"jpeg\",
+                \"gif\",
+                \"png\"
+            ]
+        }
+    ],
+    \"options\": {
+        \"sub_for_datatype\": true
+    }
+}
+            """.strip()
+            print(content)
             f.write(content)
             
         for f in testfiles:
@@ -60,3 +101,4 @@ sub_for_datatype=true
             
     except FileExistsError:
         pass
+

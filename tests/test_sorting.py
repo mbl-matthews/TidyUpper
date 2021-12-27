@@ -23,9 +23,9 @@ def test_run():
     assert os.path.exists(env)
     
     p1 = os.path.join(Path().absolute().resolve(), env)
-    p2 = os.path.join(p1, "settings.ini")
+    p2 = os.path.join(p1, "config.json")
     TidyUpper.run(
-        {"settings": p2}
+        {"config": p2}
     )
     os.chdir(wd)
     
