@@ -4,11 +4,11 @@ def link(config=None, folders=None, watch=None):
     if None in [config, folders, watch]:
         raise ValueError("Missing parameters")
     
-    if not config.has_option("options", "sub_for_datatype"):
+    if "options" not in config and "sub_for_datatype" not in config["options"]:
         raise ValueError("Config missing mandatory options section")
         
     sub_dirs = config["options"]["sub_for_datatype"]
-    if sub_dirs == "true":
+    if sub_dirs == True:
         for folder in folders.values():
             files = os.listdir(folder["path"])
             files = [ e for e in files if os.path.isfile(folder["path"]+"/"+e)]

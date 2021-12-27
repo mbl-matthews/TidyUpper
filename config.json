@@ -1,0 +1,50 @@
+{
+    "schedule": {
+        "interval": 3600,
+        "modified": 3600
+    },
+    "directory": {
+        "watch": "~/Downloads"
+    },
+    "folder": [
+        {
+            "path": "Archives",
+            "filetypes": [
+                "rar",
+                "zip",
+                "7z"
+            ]
+        },
+        {
+            "path": "PDFs",
+            "filetypes": [
+                "pdf"
+            ]
+        },
+        {
+            "path": "EXEs",
+            "filetypes": [
+                "exe",
+                "msi"
+            ]
+        },
+        {
+            "path": "ISOs",
+            "filetypes": [
+                "iso"
+            ]
+        },
+        {
+            "path": "Images",
+            "filetypes": [
+                "jpg",
+                "jpeg",
+                "gif",
+                "png"
+            ]
+        }
+    ],
+    "options": {
+        "sub_for_datatype": true
+    }
+}

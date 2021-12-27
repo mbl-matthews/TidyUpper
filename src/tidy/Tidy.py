@@ -8,27 +8,27 @@ def sort(config=None, folders=None, watch=None):
     if None in [config, folders, watch]:
         raise ValueError("Missing parameters")
 
-    if not config.has_section("folder"):
+    if not "folder" in config:
         raise ValueError("Config missing mandatory folder section")
         
-    for entry in config["folder"]:
+    for entry in range(len(config["folder"])):
         try:
-            entryjson = json.loads(config["folder"][entry])
+            entryjson = config["folder"][entry]
             path = entryjson["path"]
             if path[-1] != "/":
                 path = path + "/"
-            filetypes = entryjson["filetype"].split(",")
+            filetypes = entryjson["filetypes"]
             filereg = "(.*)("
             for ftype in filetypes:
                 filereg = filereg + "[.]" + ftype + "|"
             filereg = filereg[:-1] + ")"
 
-            folders[entry] = {
+            folders[str(entry)] = {
                 "path": watch + path,
                 "reg": filereg
             }
-        except:
-            print("Syntax Error at entry "+entry)
+        except Exception as e:
+            print("Syntax Error at entry "+str(entry)+ " ; "+str(e))
 
     for folder in folders.values():
         if not os.path.exists(folder["path"]):

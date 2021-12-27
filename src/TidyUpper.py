@@ -1,14 +1,15 @@
 import os
 import configparser
+import json
 import pathlib
 
 from src.tidy import Tidy
 from src.subdir import Subdir
 
-def run(options={"settings": "settings.ini"}):
+def run(options={"config": "config.json"}):
 
-    config = configparser.ConfigParser()
-    config.read(options["settings"])
+    f = open(options["config"])
+    config = json.load(f)
 
     watch = config["directory"]["watch"]
     if watch[0] == "~":
