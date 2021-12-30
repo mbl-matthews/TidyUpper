@@ -15,6 +15,7 @@ def link(config=None, folders=None, watch=None):
             datatypes = []
             for file in files:
                 ftokens = file.split(".")
+                # TODO if typeless put into typeless folder
                 if ftokens[0] == file:
                     continue
                 datatypes.append("."+ftokens[-1])

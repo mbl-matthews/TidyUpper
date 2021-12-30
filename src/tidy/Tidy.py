@@ -35,31 +35,40 @@ def sort(config=None, folders=None, watch=None):
             os.mkdir(folder["path"])
 
     files = os.listdir(watch)
+    # Move unconfigured folders into Extra directory
     for file in files:
+        if not os.path.isdir(watch+file):
+            continue
+
+        # checks if a folder is configured in the config.json
+        # if not move to Extra
         known_folder = False
         for folder in folders.values():
             if Helper.are_same_file(folder["path"], watch + file):
                 known_folder = True
-        if not known_folder and os.path.isdir(watch+file):
+        if not known_folder:
             new_file = Helper.prepare_new_filename(folders["extra"]["path"] + file)
             os.rename(watch+file, new_file)
 
     files = os.listdir(watch)
+    # Move each file into it's configured folder based on the config.json
+    # Unconfigured filetypes will be moved into the Leftover folder
     for file in files:
-        if re.match("(.*)[.](.*)", file) and not re.match("(.*)[.]py", file):
-            abs_file = watch + file
-            try:
-                matched = False
-                for folder in folders.values():
-                    if folder["reg"] is None:
-                        continue
-                    if re.match(folder["reg"], file):
-                        new_file = Helper.prepare_new_filename(folder["path"] + file)
-                        os.rename(abs_file, new_file)
-                        matched = True
-                        break
-                if not matched:
-                    new_file = Helper.prepare_new_filename(folders["leftover"]["path"] + file)
+        abs_file = watch + file
+        if os.path.isdir(abs_file):
+            continue
+        try:
+            matched = False
+            for folder in folders.values():
+                if folder["reg"] is None:
+                    continue
+                if re.match(folder["reg"], file):
+                    new_file = Helper.prepare_new_filename(folder["path"] + file)
                     os.rename(abs_file, new_file)
-            except PermissionError:
-                pass
+                    matched = True
+                    break
+            if not matched:
+                new_file = Helper.prepare_new_filename(folders["leftover"]["path"] + file)
+                os.rename(abs_file, new_file)
+        except PermissionError:
+            pass
