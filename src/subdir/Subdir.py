@@ -11,7 +11,7 @@ def link(config=None, folders=None, watch=None):
     if sub_dirs == True:
         for folder in folders.values():
             files = os.listdir(folder["path"])
-            files = [ e for e in files if os.path.isfile(folder["path"]+"/"+e)]
+            files = [ e for e in files if os.path.isfile(os.path.join(folder["path"], e))]
             datatypes = []
             for file in files:
                 ftokens = file.split(".")
@@ -25,16 +25,16 @@ def link(config=None, folders=None, watch=None):
                     os.mkdir(sub_folder)
                 m_files = [e for e in files if e.endswith(type)]
                 for s_file in m_files:
-                    original = folder["path"]+s_file
-                    symlink = sub_folder+"/"+s_file
+                    original = os.path.join(folder["path"], s_file)
+                    symlink = os.path.join(sub_folder, s_file)
                     if not os.path.exists(symlink):
                         os.symlink(original, symlink)
             m_files = [e for e in files if len(e.split(".")) == 0]
-            sub_folder = folder["path"]+"typeless"
+            sub_folder = os.path.join(folder["path"], "typeless")
             if not os.path.exists(sub_folder):
                 os.mkdir(sub_folder)
             for s_file in m_files:
-                original = folder["path"] + s_file
-                symlink = sub_folder + "/" + s_file
+                original = os.path.join(folder["path"], s_file)
+                symlink = os.path.join(sub_folder, s_file)
                 if not os.path.exists(symlink):
                     os.symlink(original, symlink)

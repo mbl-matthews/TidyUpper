@@ -21,11 +21,11 @@ def run(options={"config": "config.json"}):
 
     folders = {
         "extra": {
-            "path": watch+"Extra/",
+            "path": os.path.join(watch, "Extra/"),
             "reg": None
         },
         "leftover": {
-            "path": watch+"Leftover/",
+            "path": os.path.join(watch, "Leftover/"),
             "reg": None
         },
     }
