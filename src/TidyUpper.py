@@ -15,17 +15,15 @@ def run(options={"config": "config.json"}):
     if watch[0] == "~":
         home = str(pathlib.Path.home())
         watch = home+watch[1:]
-    watch = watch.replace("\\", "/")
-    if watch[-1] != "/":
-        watch = watch + "/"
+    watch = pathlib.Path(watch)
 
     folders = {
         "extra": {
-            "path": os.path.join(watch, "Extra/"),
+            "path": watch / "Extra/",
             "reg": None
         },
         "leftover": {
-            "path": os.path.join(watch, "Leftover/"),
+            "path": watch / "Leftover/",
             "reg": None
         },
     }
