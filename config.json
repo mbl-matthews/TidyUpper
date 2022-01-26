@@ -45,6 +45,8 @@
         }
     ],
     "options": {
-        "sub_for_datatype": true
+        "sub_for_datatype": true,
+        "disable_extra": false,
+        "disable_leftover": false
     }
 }

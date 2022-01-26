@@ -4,7 +4,7 @@ import json
 
 from src.util import Helper
 
-def sort(config=None, folders=None, watch=None):
+def sort(config=None, folders=None, watch=None, options={}):
     if None in [config, folders, watch]:
         raise ValueError("Missing parameters")
 
@@ -46,7 +46,7 @@ def sort(config=None, folders=None, watch=None):
         for folder in folders.values():
             if Helper.are_same_file(folder["path"], watch / file):
                 known_folder = True
-        if not known_folder:
+        if not known_folder and not options["disable_extra"]:
             new_file = Helper.prepare_new_filename(folders["extra"]["path"] / file)
             os.rename(watch / file, new_file)
 
@@ -67,7 +67,7 @@ def sort(config=None, folders=None, watch=None):
                     os.rename(abs_file, new_file)
                     matched = True
                     break
-            if not matched:
+            if not matched and not options["disable_leftover"]:
                 new_file = Helper.prepare_new_filename(folders["leftover"]["path"] / file)
                 os.rename(abs_file, new_file)
         except PermissionError:

@@ -17,6 +17,10 @@ testfiles = [
     "i.jpeg",
     "m.gif",
     "g.png",
+    "leftover.raw",
+]
+testfolder = [
+    "extra_folder/",
 ]
 
 
@@ -98,6 +102,9 @@ def create_env(request):
             
         for f in testfiles:
             Path(os.path.join(env, f)).touch()
+            
+        for d in testfolder:
+            os.mkdir(os.path.join(env, d))
             
     except FileExistsError:
         pass

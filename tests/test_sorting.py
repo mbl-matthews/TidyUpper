@@ -1,5 +1,6 @@
 import pytest
 import os
+import json
 
 from pathlib import Path
 from src import TidyUpper
@@ -17,7 +18,12 @@ testfiles = [
     "i.jpeg",
     "m.gif",
     "g.png",
+    "leftover.raw",
 ]
+testfolder = [
+    "extra_folder/",
+]
+
 def test_run():
     wd = os.getcwd()
     assert os.path.exists(env)
@@ -61,4 +67,40 @@ def test_run():
     # TODO create case to test that every possible ending is covered  
     assert os.path.exists(os.path.join(env, "Leftover"))  
     assert os.path.exists(os.path.join(env, "Extra"))  
+    
+def test_disabled_extra_folder():
+    wd = os.getcwd()
+    assert os.path.exists(env)
+    
+    p1 = os.path.join(Path().absolute().resolve(), env)
+    p2 = os.path.join(p1, "config.json")
+    f = open(p2)
+    config = json.load(f)
+    config["options"]["disable_extra"] = True
+    assert os.path.exists(os.path.join(env, "extra_folder/"))
+    TidyUpper.run(
+        preloaded_config=config
+    )
+    os.chdir(wd)
+    
+    assert os.path.exists(os.path.join(env, "extra_folder/"))
+    assert not os.path.exists(os.path.join(env, "Extra/"))
+    
+def test_disabled_leftover_files():
+    wd = os.getcwd()
+    assert os.path.exists(env)
+    
+    p1 = os.path.join(Path().absolute().resolve(), env)
+    p2 = os.path.join(p1, "config.json")
+    f = open(p2)
+    config = json.load(f)
+    config["options"]["disable_leftover"] = True
+    assert os.path.exists(os.path.join(env, "extra_folder/"))
+    TidyUpper.run(
+        preloaded_config=config
+    )
+    os.chdir(wd)
+    
+    assert os.path.exists(os.path.join(env, "leftover.raw"))
+    assert not os.path.exists(os.path.join(env, "Leftover/"))
     
